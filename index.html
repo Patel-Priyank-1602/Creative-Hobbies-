@@ -33,12 +33,49 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #e1e1e1;
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .preloader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--light);
+            border-top-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Animations */
@@ -73,6 +110,55 @@
         @keyframes shimmer {
             0% { background-position: -100% 0; }
             100% { background-position: 200% 0; }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
         }
 
         /* Header Styles */
@@ -145,6 +231,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            display: inline-block;
         }
 
         .header p {
@@ -180,7 +267,7 @@
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             overflow: hidden;
-            transition: var(--transition);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
             position: relative;
             isolation: isolate;
             height: 100%;
@@ -214,8 +301,8 @@
         }
 
         .section-card:hover {
-            transform: translateY(-15px) rotateX(5deg);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            transform: translateY(-15px) scale(1.05) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         .section-content {
@@ -454,7 +541,7 @@
 
         .social-link:hover {
             background-color: var(--primary);
-            transform: translateY(-5px);
+            transform: translateY(-5px) scale(1.1);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
@@ -471,6 +558,7 @@
 
         .contact-item:hover {
             transform: translateX(5px);
+            color: var(--primary-light);
         }
 
         .contact-icon {
@@ -481,6 +569,7 @@
 
         .contact-item:hover .contact-icon {
             transform: scale(1.2);
+            color: var(--secondary);
         }
 
         .contact-info a {
@@ -523,10 +612,66 @@
 
         .copyright:hover {
             opacity: 1;
+            color: var(--primary-light);
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-5px);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 1rem;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
             .header {
                 padding: 2.5rem 1.5rem;
             }
@@ -584,6 +729,13 @@
             .contact-item {
                 justify-content: center;
             }
+
+            .back-to-top {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 40px;
+                height: 40px;
+            }
         }
 
         @media (min-width: 769px) and (max-width: 1024px) {
@@ -607,10 +759,31 @@
     </style>
 </head>
 <body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">Creative & Insights</a>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links">
+                <a href="#drawing">Drawing</a>
+                <a href="#films">Films</a>
+                <a href="#music">Music</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
     <header class="header">
         <div class="header-container">
             <div class="header-content">
-                <h1>Creative & Insights</h1>
+                <h1 id="typed-text"></h1>
                 <p>Expressions & Insights: My Art, Music, Reviews, and Perspectives</p>
             </div>
             <div class="header-image-container">
@@ -622,7 +795,7 @@
     <main class="container">
         <div class="sections">
             <!-- Drawing Section -->
-            <div class="section-card drawing">
+            <div class="section-card drawing" id="drawing">
                 <div class="section-content">
                     <h2 class="section-title">Drawing</h2>
                     <p class="section-description">Expresses creativity by sketching and sharing original artworks. Enjoys exploring various artistic techniques and styles.</p>
@@ -631,7 +804,7 @@
             </div>
 
             <!-- Film Reviews Section -->
-            <div class="section-card films">
+            <div class="section-card films" id="films">
                 <div class="section-content">
                     <h2 class="section-title">Film Reviews</h2>
                     <p class="section-description">Creates videos analyzing films and directors, reviewing their style and techniques. Also suggests movies based on different themes and genres.</p>
@@ -640,7 +813,7 @@
             </div>
 
             <!-- Music Section -->
-            <div class="section-card music">
+            <div class="section-card music" id="music">
                 <div class="section-content">
                     <h2 class="section-title">Music</h2>
                     <p class="section-description">Enjoys singing different genres and shares the songs they sing. Uses music as a way to relax and connect emotionally.</p>
@@ -650,7 +823,7 @@
         </div>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" id="contact">
         <div class="footer-container">
             <div class="footer-section reveal">
                 <h3>About</h3>
@@ -685,27 +858,88 @@
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    <div class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
     <script>
-        // Animation on scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            const reveals = document.querySelectorAll('.reveal');
-            
-            function revealOnScroll() {
-                reveals.forEach(element => {
-                    const windowHeight = window.innerHeight;
-                    const elementTop = element.getBoundingClientRect().top;
-                    const elementVisible = 150;
-                    
-                    if (elementTop < windowHeight - elementVisible) {
-                        element.classList.add('active');
-                    }
-                });
+        // Preloader
+        window.addEventListener('load', () => {
+            const preloader = document.querySelector('.preloader');
+            preloader.classList.add('fade-out');
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 500);
+        });
+
+        // Typing Effect for Header
+        const text = "Creative & Insights";
+        let index = 0;
+        const typedText = document.getElementById('typed-text');
+
+        function type() {
+            if (index < text.length) {
+                typedText.textContent += text.charAt(index);
+                index++;
+                setTimeout(type, 100);
             }
-            
-            window.addEventListener('scroll', revealOnScroll);
-            
-            // Initial check
-            revealOnScroll();
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(type, 500);
+        });
+
+        // Animation on Scroll
+        const reveals = document.querySelectorAll('.reveal');
+        
+        function revealOnScroll() {
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+
+        // Back to Top Button
+        const backToTop = document.querySelector('.back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Hamburger Menu
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.querySelector('i').classList.toggle('fa-bars');
+            hamburger.querySelector('i').classList.toggle('fa-times');
+        });
+
+        // Close mobile menu when clicking a link
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.querySelector('i').classList.add('fa-bars');
+                hamburger.querySelector('i').classList.remove('fa-times');
+            });
         });
     </script>
 </body>
